@@ -5,6 +5,8 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -18,8 +20,9 @@ public class Employee implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "employee_id")
-	private long employeeID;
+	private Long employeeID;
 
 	@Column(name = "first_name")
 	private String firstName;
@@ -37,14 +40,14 @@ public class Employee implements Serializable {
 	private Timestamp hireDate;
 
 	@Column(name = "job_id")
-	private long jobId;
+	private String jobId;
 
 	@Column(name = "salary")
 	private double salary;
 
 	@Column(name = "manager_id")
-	private long managerId;
+	private String managerId;
 
 	@Column(name = "department_id")
-	private long departmentId;
+	private String departmentId;
 }
