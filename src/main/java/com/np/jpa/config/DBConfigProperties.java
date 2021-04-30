@@ -11,7 +11,10 @@ import lombok.Data;
 @RefreshScope
 public class DBConfigProperties {
 
-	@Value("${spring.datasource.mysqlUrl}")
+	@Value("${spring.datasource.driver-class-name}")
+	private String driverClassName;
+	
+	@Value("${spring.datasource.url}")
 	private String url;
 
 	@Value("${spring.datasource.userName}")

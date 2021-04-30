@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.websocket.server.PathParam;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.np.jpa.dao.EmployeeRepo;
@@ -42,9 +39,12 @@ public class EmployeeController {
 	}
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<Employee> getEmployeeBtId(@PathVariable Long id) {
+	public ResponseEntity<Object> getEmployeeBtId(@PathVariable Long id) {
 		Optional<Employee> optEmployee = repo.findById(id);
 		Employee employee = optEmployee.isPresent() ? optEmployee.get() : null;
+		if(Objects.isNull(employee)) {
+			return new ResponseEntity<>("Employee Record Not Found with Id: " + id, HttpStatus.OK);
+		}
 		return new ResponseEntity<>(employee, HttpStatus.OK);
 	}
 
@@ -58,16 +58,23 @@ public class EmployeeController {
 	public ResponseEntity<Object> updateEmployeeRecord(@RequestBody Employee request) {
 		Optional<Employee> optEmp = repo.findById(request.getEmployeeID());
 		if (optEmp.isEmpty()) {
+			return new ResponseEntity<>("No Employee exists with id: "+request.getEmployeeID(), HttpStatus.OK);
+		}
+		Employee reponse = repo.save(request);
+		if (Objects.isNull(reponse)) {
 			return new ResponseEntity<>("Employee Record Not Found with Id: " + request.getEmployeeID(),
 					HttpStatus.OK);
 		}
-		Employee reponse = repo.save(request);
 		return new ResponseEntity<>(reponse, HttpStatus.OK);
 	}
 
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<String> deleteEmployeeRecord(@PathVariable Long id) {
-		repo.deleteById(id);
+		try {
+			repo.deleteById(id);
+		}catch (Exception e) {
+			return new ResponseEntity<>("No Employee exists with id: "+id, HttpStatus.OK);
+		}
 		return new ResponseEntity<>("Employee Record Deleted Successfully", HttpStatus.OK);
 	}
 }

@@ -1,12 +1,15 @@
 package com.np.jpa;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@SpringBootApplication(exclude = HibernateJpaAutoConfiguration.class)
+@SpringBootApplication(exclude = { SecurityAutoConfiguration.class,
+		ManagementWebSecurityAutoConfiguration.class })
+//@EnableCaching
+@EnableJpaRepositories
 public class EmployeeServiceWithMySqlApplication {
 
 	public static void main(String[] args) {

@@ -2,7 +2,9 @@ package com.np.jpa.config;
 
 import java.util.Properties;
 
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -15,6 +17,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
+@RefreshScope
 @EnableTransactionManagement
 public class AppConfig {
 
@@ -25,13 +28,14 @@ public class AppConfig {
 	@Primary
 	public HikariDataSource getDataSource() {
 		HikariConfig config = new HikariConfig();
+		config.setDriverClassName(properties.getDriverClassName());
 		config.setJdbcUrl(properties.getUrl());
 		config.setUsername(properties.getUsername());
 		config.setPassword(properties.getPassword());
 		return new HikariDataSource(config);
 	}
 
-	@Bean(name = "entityManagerFactory")
+	@Bean
 	public LocalSessionFactoryBean sessionFactory() {
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
 		sessionFactory.setDataSource(getDataSource());
@@ -40,10 +44,10 @@ public class AppConfig {
 		return sessionFactory;
 	}
 
-	@Bean(name = "transactionManager")
-	public PlatformTransactionManager hibernateTransactionManager() {
+	@Bean
+	public PlatformTransactionManager hibernateTransactionManager(SessionFactory sessionFactory) {
 		HibernateTransactionManager transactionManager = new HibernateTransactionManager();
-		transactionManager.setSessionFactory(sessionFactory().getObject());
+		transactionManager.setSessionFactory(sessionFactory);
 		return transactionManager;
 	}
 

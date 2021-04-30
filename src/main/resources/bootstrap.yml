@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: employee-service-with-mysql
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+        - info
+        - refresh

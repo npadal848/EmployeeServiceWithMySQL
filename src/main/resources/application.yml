@@ -1,15 +1,26 @@
 spring:
+  profiles:
+    active:
+    - local
+---
+spring:
+  profiles:
+  - local
+logging:
+  level:
+    root: info  
+
+---
+spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    mysqlUrl: jdbc:mysql://localhost:3306/np_repo
-    userName: root
-    password: Admin@123
-    type: com.zaxxer.hikari.HikariConfig
-#    mysqlUrl: ${cloud.services.np_mysql.credentials.url}
-#    userName: ${cloud.services.np_mysql.credentials.username}
-#    password: ${cloud.services.np_mysql.credentials.password}
-#    type: com.zaxxer.hikari.HikariConfig
+    url: ${vcap.services.NPCloud-mysql.credentials.url}
+    userName: ${vcap.services.NPCloud-mysql.credentials.username}
+    password: ${vcap.services.NPCloud-mysql.credentials.password}
+    type: com.zaxxer.hikari.HikariDataSource
   jpa:
-    generate-ddl: true
     show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
 
